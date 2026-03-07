@@ -12,14 +12,29 @@ print("")
 print("Level 2")
 
 #1. Середнє значення трьох чисел
+def average(sum, count):
+  return sum / count
+
 print("Середнє значення трьох чисел")
 
 a = float(input("Перше число: "))
 b = float(input("Друге число: "))
 c = float(input("Третє число: "))
 
-average = (a + b + c) / 3
-print("Середнє значення:", average)
+print("Середнє значення:", average(a, b, c))
+
+print("")
+
+print("Середнє значення чисел")
+count = int(input("Введіть кількість: "))
+sum = 0
+for i in range(1, count + 1):
+  a = float(input(f"Число {i}: "))
+  sum += a
+
+result = average(sum, count)
+
+print("Середнє значення:", result)
 
 print("")
 
