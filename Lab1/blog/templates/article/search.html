@@ -1,0 +1,27 @@
+{% extends 'index.html' %}
+
+{% block content %}
+
+<h2>Результати пошуку</h2>
+
+{% if query %}
+    <p>
+        Запит: "<b>{{ query }}</b>"<br>
+        {% if results_count > 0 %}
+          Знайдено статей: <b>{{ results_count }}</b>
+        {% endif %}
+    </p>
+{% endif %}
+
+{% for article in results %}
+    <div class="article">
+        <h3>{{ article.title }}</h3>
+        <p>{{ article.text }}</p>
+        <p class="meta">Дата публікації: {{ article.published_at|date:"d.m.Y H:i" }}</p>
+        <p><b>Категорія:</b> {{ article.category.name }}</p>
+    </div>
+{% empty %}
+    <p class="empty-text">Нічого не знайдено.</p>
+{% endfor %}
+
+{% endblock %}

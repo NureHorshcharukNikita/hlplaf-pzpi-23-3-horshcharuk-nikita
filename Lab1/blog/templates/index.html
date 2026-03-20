@@ -46,12 +46,30 @@
       .pagination strong {
         background-color: #ddd;
       }
+
+      .search-form {
+        margin-top: 15px;
+      }
+
+      .search-form input {
+        padding: 6px;
+        width: 250px;
+      }
+
+      .search-form button {
+        padding: 6px 12px;
+      }
     </style>
   </head>
   <body>
     <div class="container">
       <div class="header">
         <h1>Система статей</h1>
+
+        <form action="{% url 'article_search' %}" method="get" class="search-form">
+          <input type="text" name="q" placeholder="Пошук статей..." />
+          <button type="submit">Знайти</button>
+        </form>
       </div>
 
       {% block content %}

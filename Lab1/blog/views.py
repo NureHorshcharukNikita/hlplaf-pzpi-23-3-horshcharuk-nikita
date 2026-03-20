@@ -1,6 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Article
 from django.core.paginator import Paginator
+from django.db.models import Q
 
 # Create your views here.
 def article_list(request):
@@ -22,4 +23,23 @@ def article_list(request):
         'page_obj': page_obj,
         'page_range': page_range,
         'total_pages': total,
+    })
+
+
+
+def article_search(request):
+    query = request.GET.get('q', '').strip()
+
+    if not query:
+        return redirect('article_list')
+
+    results = Article.objects.filter(
+        Q(title__icontains=query) |
+        Q(text__icontains=query)
+    )
+
+    return render(request, 'article/search.html', {
+        'results': results,
+        'query': query,
+        'results_count': results.count(),
     })
