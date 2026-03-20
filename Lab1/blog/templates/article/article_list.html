@@ -1,0 +1,48 @@
+{% extends 'index.html' %}
+
+{% block content %}
+
+<h2 class="page-title">Список статей</h2>
+
+{% for article in page_obj %}
+    <div class="article">
+        <h3>{{ article.title }}</h3>
+        <p>{{ article.text }}</p>
+        <p class="meta">Дата публікації: {{ article.published_at|date:"d.m.Y H:i" }}</p>
+        <p><b>Категорія:</b> {{ article.category.name }}</p>
+    </div>
+{% empty %}
+    <p class="empty-text">Статей поки немає.</p>
+{% endfor %}
+
+<div class="pagination">
+
+    {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}">←</a>
+    {% endif %}
+
+    {% if 1 not in page_range %}
+        <a href="?page=1">1</a>
+        ...
+    {% endif %}
+
+    {% for num in page_range %}
+        {% if page_obj.number == num %}
+            <strong>{{ num }}</strong>
+        {% else %}
+            <a href="?page={{ num }}">{{ num }}</a>
+        {% endif %}
+    {% endfor %}
+
+    {% if total_pages not in page_range %}
+        ...
+        <a href="?page={{ total_pages }}">{{ total_pages }}</a>
+    {% endif %}
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">→</a>
+    {% endif %}
+
+</div>
+
+{% endblock %}

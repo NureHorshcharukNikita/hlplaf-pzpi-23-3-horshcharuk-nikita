@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Система статей</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background-color: #f8f9fa;
+      }
+
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+      }
+
+      .header {
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #ccc;
+      }
+
+      .article {
+        background-color: white;
+        border: 1px solid #ddd;
+        padding: 15px;
+        margin-bottom: 15px;
+      }
+
+      .pagination {
+        margin-top: 20px;
+        text-align: center;
+      }
+
+      .pagination a,
+      .pagination strong {
+        display: inline-block;
+        margin: 0 4px;
+        padding: 6px 12px;
+        border: 1px solid #ccc;
+        text-decoration: none;
+        color: black;
+        background-color: white;
+      }
+
+      .pagination strong {
+        background-color: #ddd;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Система статей</h1>
+      </div>
+
+      {% block content %}
+      {% endblock %}
+    </div>
+  </body>
+</html>
