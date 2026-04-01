@@ -22,8 +22,8 @@ body {
 }
 
 .grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 20px;
 }
 
@@ -78,12 +78,16 @@ body {
 
 .movieItem {
   margin-bottom: 10px;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  line-height: 1.5;
 }
 
 .table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 10px;
+  table-layout: fixed;
 }
 
 .table th,
@@ -91,6 +95,8 @@ body {
   border: 1px solid #ddd;
   padding: 12px;
   text-align: left;
+  word-break: break-word;
+  white-space: normal;
 }
 
 .table th {
@@ -101,4 +107,18 @@ body {
   .grid {
     grid-template-columns: 1fr;
   }
+}
+
+.chartContainer {
+  width: 100%;
+  max-width: 800px;
+  height: 500px;
+  margin: 0 auto;
+}
+
+.pieContainer {
+  width: 100%;
+  max-width: 400px;
+  height: 400px;
+  margin: 0 auto;
 }
