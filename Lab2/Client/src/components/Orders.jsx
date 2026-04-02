@@ -9,8 +9,12 @@ const Orders = ({ orders }) => {
         <p>No orders yet</p>
       ) : (
         <div className="orders">
-          {orders.map((order) => (
-            <OrderCard key={order.id} order={order} />
+          {orders.map((order, index) => (
+            <OrderCard
+              key={order.id}
+              order={order}
+              number={orders.length - index}
+            />
           ))}
         </div>
       )}

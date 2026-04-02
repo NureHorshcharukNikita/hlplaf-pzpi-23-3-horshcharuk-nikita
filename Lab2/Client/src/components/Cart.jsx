@@ -1,6 +1,6 @@
 import CartItem from "./CartItem";
 
-const Cart = ({ cart, totalPrice, removeFromCart, clearCart, checkout }) => {
+const Cart = ({ cart, totalPrice, removeFromCart, clearCart, checkout, ordering }) => {
   return (
     <aside className="cart-section">
       <h2>Cart</h2>
@@ -35,8 +35,9 @@ const Cart = ({ cart, totalPrice, removeFromCart, clearCart, checkout }) => {
               <button
                 className="checkout-btn"
                 onClick={checkout}
+                disabled={ordering}
               >
-                Checkout
+                {ordering ? "Processing..." : "Checkout"}
               </button>
             </div>
           </div>
