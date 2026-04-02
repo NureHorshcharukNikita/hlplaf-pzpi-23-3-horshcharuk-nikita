@@ -20,3 +20,14 @@ export const createOrder = async (token, items) => {
     body: JSON.stringify({ items })
   });
 };
+
+export const updateOrderStatus = async (token, id, status) => {
+  await fetch(`${API}/orders/${id}/status`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify({ status })
+  });
+};

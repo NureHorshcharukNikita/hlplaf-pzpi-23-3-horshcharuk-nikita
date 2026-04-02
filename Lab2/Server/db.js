@@ -1,4 +1,5 @@
 const sqlite3 = require("sqlite3").verbose();
+const bcrypt = require("bcryptjs");
 
 const db = new sqlite3.Database("./data/shop.db");
 
@@ -54,16 +55,23 @@ db.serialize(() => {
     )
   `);
 
-  // ================= ORDER HISTORY =================
-  db.run(`
-    CREATE TABLE IF NOT EXISTS order_history (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      orderId INTEGER NOT NULL,
-      status TEXT NOT NULL,
-      changedAt TEXT DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY (orderId) REFERENCES orders(id)
-    )
-  `);
+  // ================= DEFAULT ADMIN =================
+  db.get(
+    "SELECT * FROM users WHERE role = 'admin'",
+    async (err, row) => {
+      if (!row) {
+        const hash = await bcrypt.hash("admin123", 10);
+
+        db.run(
+          `INSERT INTO users (email, password, role)
+          VALUES (?, ?, ?)`,
+          ["admin@gmail.com", hash, "admin"]
+        );
+
+        console.log("Default admin created");
+      }
+    }
+  );
 
   // ================= TEST PRODUCTS =================
   db.get(`SELECT COUNT(*) as count FROM products`, (err, row) => {

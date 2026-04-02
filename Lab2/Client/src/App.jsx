@@ -15,7 +15,7 @@ function App() {
   const { token, user, login, register, logout } = useAuth();
   const { cart, setCart, addToCart, removeFromCart, clearCart, totalItems, totalPrice } = useCart();
   const { products } = useProducts();
-  const { orders, ordering, checkout } = useOrders(token, cart, setCart);
+  const { orders, ordering, checkout, changeStatus } = useOrders(token, cart, setCart);
 
   if (!token) {
     return <Auth login={login} register={register} />;
@@ -31,22 +31,30 @@ function App() {
       />
 
       <main className="layout">
-        <ProductList
-          products={products}
-          addToCart={addToCart}
-        />
+        {user?.role !== "admin" && (
+          <>
+            <ProductList
+              products={products}
+              addToCart={addToCart}
+            />
 
-        <Cart
-          cart={cart}
-          totalPrice={totalPrice}
-          removeFromCart={removeFromCart}
-          clearCart={clearCart}
-          checkout={checkout}
-          ordering={ordering}
-        />
+            <Cart
+              cart={cart}
+              totalPrice={totalPrice}
+              removeFromCart={removeFromCart}
+              clearCart={clearCart}
+              checkout={checkout}
+              ordering={ordering}
+            />
+          </>
+        )}
       </main>
 
-      <Orders orders={orders} />
+      <Orders
+        orders={orders}
+        changeStatus={changeStatus}
+        user={user}
+      />
     </div>
   );
 }

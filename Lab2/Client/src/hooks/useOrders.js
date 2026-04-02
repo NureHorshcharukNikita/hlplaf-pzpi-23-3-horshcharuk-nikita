@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getOrders, createOrder } from "../api/orders";
+import { updateOrderStatus } from "../api/orders";
 
 export function useOrders(token, cart, setCart) {
   const [orders, setOrders] = useState([]);
@@ -32,9 +33,16 @@ export function useOrders(token, cart, setCart) {
     }
   };
 
+  const changeStatus = async (id, status) => {
+    await updateOrderStatus(token, id, status);
+    const data = await getOrders(token);
+    setOrders(data);
+  };
+
   return {
     orders,
     ordering,
-    checkout
+    checkout,
+    changeStatus
   };
 }

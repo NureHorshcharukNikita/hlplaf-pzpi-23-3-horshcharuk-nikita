@@ -60,64 +60,80 @@ router.post("/order", auth, (req, res) => {
 });
 
 router.get("/orders", auth, (req, res) => {
-  db.all(
-    `
+  const isAdmin = req.user.role === "admin";
+
+  const query = `
     SELECT
       o.id AS orderId,
       o.total AS orderTotal,
       o.status AS orderStatus,
+      o.userId AS userId,
+      u.email AS userEmail,
       oi.productId AS productId,
       oi.name AS itemName,
       oi.price AS itemPrice,
       oi.quantity AS itemQuantity
     FROM orders o
     LEFT JOIN order_items oi ON o.id = oi.orderId
-    WHERE o.userId = ?
+    LEFT JOIN users u ON u.id = o.userId
+    ${isAdmin ? "" : "WHERE o.userId = ?"}
     ORDER BY o.id DESC
-    `,
-    [req.user.id],
-    (err, rows) => {
-      if (err) {
-        return res.status(500).json({ error: "Database error" });
+    `;
+
+  const params = isAdmin ? [] : [req.user.id];
+
+  db.all(query, params, (err, rows) => {
+    if (err) {
+      return res.status(500).json({ error: "Database error" });
+    }
+
+    const orders = {};
+
+    rows.forEach((row) => {
+      if (!orders[row.orderId]) {
+        orders[row.orderId] = {
+          id: row.orderId,
+          total: row.orderTotal,
+          status: row.orderStatus,
+          userId: row.userId,
+          userEmail: row.userEmail,
+          items: []
+        };
       }
 
-      const orders = {};
+      if (row.productId) {
+        orders[row.orderId].items.push({
+          productId: row.productId,
+          name: row.itemName,
+          price: row.itemPrice,
+          quantity: row.itemQuantity
+        });
+      }
+    });
 
-      rows.forEach((row) => {
-        if (!orders[row.orderId]) {
-          orders[row.orderId] = {
-            id: row.orderId,
-            total: row.orderTotal,
-            status: row.orderStatus,
-            items: []
-          };
-        }
+    const result = Object.values(orders).sort(
+      (a, b) => b.id - a.id
+    );
 
-        if (row.productId) {
-          orders[row.orderId].items.push({
-            productId: row.productId,
-            name: row.itemName,
-            price: row.itemPrice,
-            quantity: row.itemQuantity
-          });
-        }
-      });
-
-      const result = Object.values(orders)
-        .sort((a, b) => b.id - a.id);
-
-      res.json(result);
-    }
-  );
+    res.json(result);
+  });
 });
 
-router.patch("/orders/:id/status", (req, res) => {
+
+router.patch("/orders/:id/status", auth, (req, res) => {
   const { status } = req.body;
+  const orderId = req.params.id;
 
   db.run(
     "UPDATE orders SET status = ? WHERE id = ?",
-    [status, req.params.id],
-    () => {
+    [status, orderId],
+    (err) => {
+      if (err) {
+        return res.status(500).json({
+          error: "Update failed"
+        });
+      }
+
       res.json({ success: true });
     }
   );

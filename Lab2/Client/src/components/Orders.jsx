@@ -1,6 +1,6 @@
 import OrderCard from "./OrderCard";
 
-const Orders = ({ orders }) => {
+const Orders = ({ orders, changeStatus, user }) => {
   return (
     <section className="orders-section">
       <h2>Orders</h2>
@@ -14,6 +14,8 @@ const Orders = ({ orders }) => {
               key={order.id}
               order={order}
               number={orders.length - index}
+              changeStatus={changeStatus}
+              user={user}
             />
           ))}
         </div>
