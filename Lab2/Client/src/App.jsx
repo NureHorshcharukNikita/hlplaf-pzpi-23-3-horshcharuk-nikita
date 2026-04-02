@@ -1,6 +1,11 @@
 import "./App.css";
 import { useEffect, useMemo, useState } from "react";
 
+import Header from "./components/Header";
+import ProductList from "./components/ProductList";
+import Cart from "./components/Cart";
+import Orders from "./components/Orders";
+
 function App() {
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
@@ -79,9 +84,7 @@ function App() {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({
-        items: cart
-      })
+      body: JSON.stringify({ items: cart })
     })
       .then((res) => res.json())
       .then((order) => {
@@ -95,124 +98,24 @@ function App() {
 
   return (
     <div className="page">
-      <header className="header">
-        <h1>Product Catalog</h1>
-
-        <div className="cart-summary">
-          <span>Items: {totalItems}</span>
-          <span>Total: ${totalPrice}</span>
-        </div>
-      </header>
+      <Header totalItems={totalItems} totalPrice={totalPrice} />
 
       <main className="layout">
-        <section className="catalog-section">
-          <h2>Products</h2>
+        <ProductList
+          products={products}
+          addToCart={addToCart}
+        />
 
-          <div className="products">
-            {products.map((product) => (
-              <div className="product-card" key={product.id}>
-                <h3 className="product-name">{product.name}</h3>
-                <p className="product-price">${product.price}</p>
-
-                <button
-                  className="add-btn"
-                  disabled={product.disabled || product.id === 0}
-                  onClick={() => addToCart(product)}
-                >
-                  {product.disabled || product.id === 0
-                    ? "Unavailable"
-                    : "Add to cart"}
-                </button>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <aside className="cart-section">
-          <h2>Cart</h2>
-
-          {cart.length === 0 ? (
-            <p className="empty-cart">Your cart is empty</p>
-          ) : (
-            <>
-              <div className="cart-list">
-                {cart.map((item) => (
-                  <div className="cart-item" key={item.id}>
-                    <div>
-                      <h4>{item.name}</h4>
-                      <p>
-                        ${item.price} × {item.quantity}
-                      </p>
-                    </div>
-
-                    <div className="cart-item-right">
-                      <strong>
-                        ${item.price * item.quantity}
-                      </strong>
-
-                      <button
-                        className="remove-btn"
-                        onClick={() => removeFromCart(item.id)}
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="cart-footer">
-                <p className="cart-total">
-                  Total: <strong>${totalPrice}</strong>
-                </p>
-
-                <div className="cart-actions">
-                  <button
-                    className="clear-btn"
-                    onClick={clearCart}
-                  >
-                    Clear cart
-                  </button>
-
-                  <button
-                    className="checkout-btn"
-                    onClick={checkout}
-                  >
-                    Checkout
-                  </button>
-                </div>
-              </div>
-            </>
-          )}
-        </aside>
+        <Cart
+          cart={cart}
+          totalPrice={totalPrice}
+          removeFromCart={removeFromCart}
+          clearCart={clearCart}
+          checkout={checkout}
+        />
       </main>
-      <section className="orders-section">
-        <h2>Orders</h2>
 
-        {orders.length === 0 ? (
-          <p>No orders yet</p>
-        ) : (
-          <div className="orders">
-            {orders.map((order) => (
-              <div key={order.id} className="order-card">
-                <h3>Order #{order.id}</h3>
-
-                {order.items.map((item) => (
-                  <div
-                    key={item.id}
-                    className="order-item"
-                  >
-                    {item.name} × {item.quantity} — $
-                    {item.price * item.quantity}
-                  </div>
-                ))}
-
-                <strong>Total: ${order.total}</strong>
-              </div>
-            ))}
-          </div>
-        )}
-      </section>
+      <Orders orders={orders} />
     </div>
   );
 }
