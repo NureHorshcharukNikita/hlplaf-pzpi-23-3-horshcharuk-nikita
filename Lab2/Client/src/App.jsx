@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 function App() {
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
+  const [orders, setOrders] = useState([]);
 
   useEffect(() => {
     fetch("http://192.168.0.77:3000/products")
@@ -11,14 +12,22 @@ function App() {
       .then((data) => setProducts(data))
       .catch(() => {
         setProducts([
-          { id: 0, name: "Error", price: 0 }
+          { id: 0, name: "Error", price: 0, disabled: true }
         ]);
       });
+
+    fetch("http://192.168.0.77:3000/orders")
+      .then((res) => res.json())
+      .then((data) => setOrders(data.reverse()));
   }, []);
 
   const addToCart = (product) => {
+    if (product.disabled || product.id === 0) return;
+
     setCart((prevCart) => {
-      const existingProduct = prevCart.find((item) => item.id === product.id);
+      const existingProduct = prevCart.find(
+        (item) => item.id === product.id
+      );
 
       if (existingProduct) {
         return prevCart.map((item) =>
@@ -53,7 +62,10 @@ function App() {
   }, [cart]);
 
   const totalPrice = useMemo(() => {
-    return cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    return cart.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    );
   }, [cart]);
 
   const checkout = () => {
@@ -62,14 +74,30 @@ function App() {
       return;
     }
 
-    alert(`Order placed successfully!\nTotal: $${totalPrice}`);
-    setCart([]);
+    fetch("http://192.168.0.77:3000/order", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        items: cart
+      })
+    })
+      .then((res) => res.json())
+      .then((order) => {
+        setOrders((prev) => [order, ...prev]);
+        setCart([]);
+      })
+      .catch(() => {
+        alert("Failed to place order");
+      });
   };
 
   return (
     <div className="page">
       <header className="header">
         <h1>Product Catalog</h1>
+
         <div className="cart-summary">
           <span>Items: {totalItems}</span>
           <span>Total: ${totalPrice}</span>
@@ -88,9 +116,12 @@ function App() {
 
                 <button
                   className="add-btn"
+                  disabled={product.disabled || product.id === 0}
                   onClick={() => addToCart(product)}
                 >
-                  Add to cart
+                  {product.disabled || product.id === 0
+                    ? "Unavailable"
+                    : "Add to cart"}
                 </button>
               </div>
             ))}
@@ -115,7 +146,10 @@ function App() {
                     </div>
 
                     <div className="cart-item-right">
-                      <strong>${item.price * item.quantity}</strong>
+                      <strong>
+                        ${item.price * item.quantity}
+                      </strong>
+
                       <button
                         className="remove-btn"
                         onClick={() => removeFromCart(item.id)}
@@ -133,10 +167,17 @@ function App() {
                 </p>
 
                 <div className="cart-actions">
-                  <button className="clear-btn" onClick={clearCart}>
+                  <button
+                    className="clear-btn"
+                    onClick={clearCart}
+                  >
                     Clear cart
                   </button>
-                  <button className="checkout-btn" onClick={checkout}>
+
+                  <button
+                    className="checkout-btn"
+                    onClick={checkout}
+                  >
                     Checkout
                   </button>
                 </div>
@@ -145,6 +186,33 @@ function App() {
           )}
         </aside>
       </main>
+      <section className="orders-section">
+        <h2>Orders</h2>
+
+        {orders.length === 0 ? (
+          <p>No orders yet</p>
+        ) : (
+          <div className="orders">
+            {orders.map((order) => (
+              <div key={order.id} className="order-card">
+                <h3>Order #{order.id}</h3>
+
+                {order.items.map((item) => (
+                  <div
+                    key={item.id}
+                    className="order-item"
+                  >
+                    {item.name} × {item.quantity} — $
+                    {item.price * item.quantity}
+                  </div>
+                ))}
+
+                <strong>Total: ${order.total}</strong>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
     </div>
   );
 }
