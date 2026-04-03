@@ -1,9 +1,9 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useCallback } from "react";
 
 export function useCart() {
   const [cart, setCart] = useState([]);
 
-  const addToCart = (product) => {
+  const addToCart = useCallback((product) => {
     if (product.disabled || product.id === 0) return;
 
     setCart((prev) => {
@@ -32,9 +32,9 @@ export function useCart() {
         }
       ];
     });
-  };
+  }, []);
 
-  const removeFromCart = (id) => {
+  const removeFromCart = useCallback((id) => {
     setCart((prev) =>
       prev
         .map((item) =>
@@ -47,9 +47,11 @@ export function useCart() {
         )
         .filter((item) => item.quantity > 0)
     );
-  };
+  }, []);
 
-  const clearCart = () => setCart([]);
+  const clearCart = useCallback(() => {
+    setCart([]);
+  }, []);
 
   const totalItems = useMemo(() => {
     return cart.reduce(

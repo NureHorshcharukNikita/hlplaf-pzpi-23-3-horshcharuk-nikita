@@ -1,4 +1,6 @@
-const CartItem = ({ item, removeFromCart }) => {
+import React from "react";
+
+const CartItem = React.memo(({ item, removeFromCart }) => {
   return (
     <div className="cart-item">
       <div>
@@ -22,6 +24,6 @@ const CartItem = ({ item, removeFromCart }) => {
       </div>
     </div>
   );
-};
+});
 
 export default CartItem;

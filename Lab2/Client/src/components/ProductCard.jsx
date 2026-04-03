@@ -1,4 +1,6 @@
-const ProductCard = ({ product, addToCart }) => {
+import React from "react";
+
+const ProductCard = React.memo(({ product, addToCart }) => {
   return (
     <div className="product-card">
       <h3 className="product-name">{product.name}</h3>
@@ -15,6 +17,6 @@ const ProductCard = ({ product, addToCart }) => {
       </button>
     </div>
   );
-};
+});
 
 export default ProductCard;

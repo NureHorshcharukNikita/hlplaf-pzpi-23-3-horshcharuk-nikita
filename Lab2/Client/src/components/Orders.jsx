@@ -1,6 +1,7 @@
+import React from "react";
 import OrderCard from "./OrderCard";
 
-const Orders = ({ orders, changeStatus, user }) => {
+const Orders = React.memo(({ orders, changeStatus, user }) => {
   return (
     <section className="orders-section">
       <h2>Orders</h2>
@@ -22,6 +23,6 @@ const Orders = ({ orders, changeStatus, user }) => {
       )}
     </section>
   );
-};
+});
 
 export default Orders;

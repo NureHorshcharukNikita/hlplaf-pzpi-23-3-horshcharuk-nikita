@@ -1,4 +1,7 @@
-const OrderCard = ({ order, number, changeStatus, user }) => {
+import React from "react";
+
+
+const OrderCard = React.memo(({ order, number, changeStatus, user }) => {
   return (
     <div className="order-card">
       <h3>Order #{number}</h3>
@@ -61,6 +64,6 @@ const OrderCard = ({ order, number, changeStatus, user }) => {
       <strong>Total: ${order.total}</strong>
     </div>
   );
-};
+});
 
 export default OrderCard;

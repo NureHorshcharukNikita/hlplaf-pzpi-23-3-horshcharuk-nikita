@@ -1,4 +1,5 @@
 import "./App.css";
+import { lazy, Suspense } from "react";
 
 import { useAuth } from "./hooks/useAuth";
 import { useCart } from "./hooks/useCart";
@@ -9,9 +10,10 @@ import { useRecommendations } from "./hooks/useRecommendations";
 import Header from "./components/Header";
 import ProductList from "./components/ProductList";
 import Cart from "./components/Cart";
-import Orders from "./components/Orders";
 import Auth from "./components/Auth";
-import Recommendations from "./components/Recommendations";
+
+const Orders = lazy(() => import("./components/Orders"));
+const Recommendations = lazy(() => import("./components/Recommendations"));
 
 function App() {
   const { token, user, login, register, logout } = useAuth();
@@ -40,10 +42,12 @@ function App() {
                 addToCart={addToCart}
               />
 
-              <Recommendations
-                items={recommendations}
-                addToCart={addToCart}
-              />
+              <Suspense fallback={null}>
+                <Recommendations
+                  items={recommendations}
+                  addToCart={addToCart}
+                />
+              </Suspense>
             </div>
 
             <Cart
@@ -59,11 +63,13 @@ function App() {
         )}
       </main>
 
-      <Orders
-        orders={orders}
-        changeStatus={changeStatus}
-        user={user}
-      />
+      <Suspense fallback={null}>
+        <Orders
+          orders={orders}
+          changeStatus={changeStatus}
+          user={user}
+        />
+      </Suspense>
     </div>
   );
 }

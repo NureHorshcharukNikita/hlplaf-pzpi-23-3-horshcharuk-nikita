@@ -1,43 +1,43 @@
-import { useEffect, useState } from "react";
-import { getOrders, createOrder } from "../api/orders";
-import { updateOrderStatus } from "../api/orders";
+import { useEffect, useState, useCallback } from "react";
+import { getOrders, createOrder, updateOrderStatus } from "../api/orders";
 
 export function useOrders(token, cart, setCart) {
   const [orders, setOrders] = useState([]);
   const [ordering, setOrdering] = useState(false);
 
-  useEffect(() => {
+  const fetchOrders = useCallback(async () => {
     if (!token) return;
 
-    getOrders(token)
-      .then(setOrders)
-      .catch(() => setOrders([]));
+    try {
+      const data = await getOrders(token);
+      setOrders(data);
+    } catch {
+      setOrders([]);
+    }
   }, [token]);
 
-  const checkout = async () => {
-    if (ordering) return;
-    if (!token) return;
-    if (cart.length === 0) return;
+  useEffect(() => {
+    fetchOrders();
+  }, [fetchOrders]);
+
+  const checkout = useCallback(async () => {
+    if (ordering || !token || cart.length === 0) return;
 
     setOrdering(true);
 
     try {
       await createOrder(token, cart);
-      const data = await getOrders(token);
-
-      setOrders(data);
+      await fetchOrders();
       setCart([]);
-
     } finally {
       setOrdering(false);
     }
-  };
+  }, [ordering, token, cart, setCart, fetchOrders]);
 
-  const changeStatus = async (id, status) => {
+  const changeStatus = useCallback(async (id, status) => {
     await updateOrderStatus(token, id, status);
-    const data = await getOrders(token);
-    setOrders(data);
-  };
+    await fetchOrders();
+  }, [token, fetchOrders]);
 
   return {
     orders,

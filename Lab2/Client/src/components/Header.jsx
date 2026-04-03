@@ -1,4 +1,6 @@
-const Header = ({ logout, user }) => {
+import React from "react";
+
+const Header = React.memo(({ logout, user }) => {
   const isAdmin = user?.role === "admin";
 
   return (
@@ -16,6 +18,6 @@ const Header = ({ logout, user }) => {
       </div>
     </header>
   );
-};
+});
 
 export default Header;
