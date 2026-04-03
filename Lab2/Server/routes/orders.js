@@ -8,7 +8,8 @@ router.post("/order", auth, (req, res) => {
   const { items } = req.body;
 
   const total = items.reduce(
-    (sum, item) => sum + item.price * item.quantity,
+    (sum, item) =>
+      sum + Number(item.price) * Number(item.quantity),
     0
   );
 
@@ -34,10 +35,10 @@ router.post("/order", auth, (req, res) => {
       items.forEach(item => {
         stmt.run(
           orderId,
-          item.id,
+          Number(item.id),
           item.name,
-          item.price,
-          item.quantity
+          Number(item.price),
+          Number(item.quantity)
         );
       });
 

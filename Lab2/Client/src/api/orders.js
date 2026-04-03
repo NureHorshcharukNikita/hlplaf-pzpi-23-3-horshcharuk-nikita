@@ -11,7 +11,7 @@ export const getOrders = async (token) => {
 };
 
 export const createOrder = async (token, items) => {
-  await fetch(`${API}/order`, {
+  const res = await fetch(`${API}/order`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -19,6 +19,13 @@ export const createOrder = async (token, items) => {
     },
     body: JSON.stringify({ items })
   });
+
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(err);
+  }
+
+  return res.json();
 };
 
 export const updateOrderStatus = async (token, id, status) => {

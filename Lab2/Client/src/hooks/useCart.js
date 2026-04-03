@@ -22,7 +22,15 @@ export function useCart() {
         );
       }
 
-      return [...prev, { ...product, quantity: 1 }];
+      return [
+        ...prev,
+        {
+          id: product.id,
+          name: product.name,
+          price: Number(product.price),
+          quantity: 1
+        }
+      ];
     });
   };
 

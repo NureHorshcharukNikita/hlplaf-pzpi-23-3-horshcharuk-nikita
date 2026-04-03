@@ -1,6 +1,6 @@
 import CartItem from "./CartItem";
 
-const Cart = ({ cart, totalPrice, removeFromCart, clearCart, checkout, ordering }) => {
+const Cart = ({ cart, totalItems, totalPrice, removeFromCart, clearCart, checkout, ordering }) => {
   return (
     <aside className="cart-section">
       <h2>Cart</h2>
@@ -20,6 +20,8 @@ const Cart = ({ cart, totalPrice, removeFromCart, clearCart, checkout, ordering 
           </div>
 
           <div className="cart-footer">
+            <p className="cart-items-count">{totalItems} items</p>
+
             <p className="cart-total">
               Total: <strong>${totalPrice}</strong>
             </p>

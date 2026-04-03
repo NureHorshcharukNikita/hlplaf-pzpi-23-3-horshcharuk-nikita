@@ -3,7 +3,7 @@ const db = require("../db");
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
+router.get("/products", (req, res) => {
   db.all("SELECT * FROM products", (err, rows) => {
     res.json(rows);
   });
