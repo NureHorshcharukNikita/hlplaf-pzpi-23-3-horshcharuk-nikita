@@ -15,7 +15,7 @@ router.get("/recommendations", auth, (req, res) => {
     WHERE o.userId != ?
     GROUP BY oi.productId
     ORDER BY score DESC
-    LIMIT 4
+    LIMIT 3
   `;
 
   db.all(query, [userId], (err, rows) => {

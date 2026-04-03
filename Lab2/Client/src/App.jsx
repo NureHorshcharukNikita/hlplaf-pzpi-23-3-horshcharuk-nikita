@@ -18,7 +18,7 @@ const Recommendations = lazy(() => import("./components/Recommendations"));
 function App() {
   const { token, user, login, register, logout } = useAuth();
   const { cart, setCart, addToCart, removeFromCart, clearCart, totalItems, totalPrice } = useCart();
-  const { products } = useProducts();
+  const { products, total, loading, loadMoreProducts } = useProducts();
   const { recommendations } = useRecommendations(token);
   const { orders, ordering, checkout, changeStatus } = useOrders(token, cart, setCart);
 
@@ -39,6 +39,9 @@ function App() {
             <div className="left-column">
               <ProductList
                 products={products}
+                total={total}
+                loading={loading}
+                loadMoreProducts={loadMoreProducts}
                 addToCart={addToCart}
               />
 

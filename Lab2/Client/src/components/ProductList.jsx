@@ -1,6 +1,6 @@
 import ProductCard from "./ProductCard";
 
-const ProductList = ({ products, addToCart }) => {
+const ProductList = ({ products, total, loading, loadMoreProducts, addToCart }) => {
   return (
     <section className="catalog-section">
       <h2>Products</h2>
@@ -14,6 +14,18 @@ const ProductList = ({ products, addToCart }) => {
           />
         ))}
       </div>
+
+      {products.length < total && (
+        <div className="load-more-wrap">
+          <button
+            className="load-more"
+            onClick={loadMoreProducts}
+            disabled={loading}
+          >
+            {loading ? "Loading..." : "Load more"}
+          </button>
+        </div>
+      )}
     </section>
   );
 };
