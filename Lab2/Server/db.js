@@ -86,29 +86,26 @@ db.serialize(() => {
         VALUES (?, ?, ?, ?, ?)
       `);
 
-      stmt.run(
-        "iPhone 14",
-        1000,
-        "Apple smartphone",
-        "iphone14.jpg",
-        10
-      );
-
-      stmt.run(
-        "Samsung S23",
-        900,
-        "Samsung flagship smartphone",
-        "s23.jpg",
-        8
-      );
-
-      stmt.run(
-        "Xiaomi 13",
-        700,
-        "Xiaomi smartphone",
-        "xiaomi13.jpg",
-        15
-      );
+      stmt.run("iPhone 14", 1000, "Apple smartphone", "iphone14.jpg", 10);
+      stmt.run("iPhone 15", 1200, "New Apple smartphone", "iphone15.jpg", 12);
+      stmt.run("Samsung S23", 900, "Samsung flagship smartphone", "s23.jpg", 8);
+      stmt.run("Samsung S24", 1100, "New Samsung flagship smartphone", "s24.jpg", 9);
+      stmt.run("Xiaomi 13", 700, "Xiaomi smartphone", "xiaomi13.jpg", 15);
+      stmt.run("Xiaomi 14", 850, "New Xiaomi smartphone", "xiaomi14.jpg", 10);
+      stmt.run("Google Pixel 8", 950, "Google smartphone", "pixel8.jpg", 7);
+      stmt.run("OnePlus 11", 800, "OnePlus flagship smartphone", "oneplus11.jpg", 11);
+      stmt.run("MacBook Air M2", 1400, "Apple laptop", "macbookairm2.jpg", 6);
+      stmt.run("MacBook Pro M3", 2200, "Apple professional laptop", "macbookprom3.jpg", 4);
+      stmt.run("Dell XPS 13", 1300, "Dell ultrabook laptop", "dellxps13.jpg", 5);
+      stmt.run("Lenovo ThinkPad X1", 1500, "Business laptop", "thinkpadx1.jpg", 6);
+      stmt.run("iPad Air", 800, "Apple tablet", "ipadair.jpg", 10);
+      stmt.run("iPad Pro", 1200, "Apple premium tablet", "ipadpro.jpg", 5);
+      stmt.run("Samsung Galaxy Tab S9", 900, "Samsung tablet", "tabs9.jpg", 7);
+      stmt.run("Apple Watch Series 9", 500, "Apple smartwatch", "watch9.jpg", 14);
+      stmt.run("Samsung Galaxy Watch 6", 450, "Samsung smartwatch", "watch6.jpg", 13);
+      stmt.run("AirPods Pro 2", 300, "Apple wireless earbuds", "airpodspro2.jpg", 20);
+      stmt.run("Sony WH-1000XM5", 400, "Sony noise-cancelling headphones", "sonyxm5.jpg", 9);
+      stmt.run("JBL Charge 5", 250, "Portable Bluetooth speaker", "jblcharge5.jpg", 16);
 
       stmt.finalize();
     }
