@@ -12,7 +12,7 @@ function App() {
 
   return (
     <div className="app">
-      <h1 className="title">Practice 2</h1>
+      <h1 className="title">Practise 2</h1>
 
       <div className="grid">
         <WeatherCard />
