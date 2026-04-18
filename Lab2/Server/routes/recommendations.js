@@ -8,7 +8,7 @@ router.get("/recommendations", auth, (req, res) => {
   const userId = req.user.id;
 
   const query = `
-    SELECT p.*, COUNT(*) as score
+    SELECT p.*, SUM(oi.quantity) as score
     FROM order_items oi
     JOIN orders o ON o.id = oi.orderId
     JOIN products p ON p.id = oi.productId
