@@ -12,6 +12,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Practice3" >
         <activity
+            android:name=".RomanConverterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".WheelGameActivity"
+            android:exported="false" />
+        <activity
+            android:name=".EventCalendarActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SumActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true" >
             <intent-filter>

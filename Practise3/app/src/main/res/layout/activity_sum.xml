@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/sumMain"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/sum_title"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/firstNumberEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:autofillHints=""
+            android:hint="@string/first_number_hint"
+            android:importantForAutofill="no"
+            android:inputType="numberDecimal|numberSigned"
+            android:maxWidth="420dp"
+            android:minWidth="320dp"
+            android:minHeight="48dp"
+            android:textColorHint="#5F6368" />
+
+        <EditText
+            android:id="@+id/secondNumberEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:autofillHints=""
+            android:hint="@string/second_number_hint"
+            android:importantForAutofill="no"
+            android:inputType="numberDecimal|numberSigned"
+            android:maxWidth="420dp"
+            android:minWidth="320dp"
+            android:minHeight="48dp"
+            android:textColorHint="#5F6368" />
+
+        <Button
+            android:id="@+id/calculateSumButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:maxWidth="420dp"
+            android:minWidth="320dp"
+            android:text="@string/calculate_sum" />
+
+        <TextView
+            android:id="@+id/sumResultTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/result_placeholder"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+</ScrollView>

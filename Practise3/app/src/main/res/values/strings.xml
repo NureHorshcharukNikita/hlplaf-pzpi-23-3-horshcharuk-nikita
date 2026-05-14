@@ -1,3 +1,48 @@
 <resources>
     <string name="app_name">Practice3</string>
+    <string name="practice_title">Практична робота 3</string>
+    <string name="variant_title">Варіант 3</string>
+    <string name="level_1_sum">Рівень 1: Сума чисел</string>
+    <string name="level_2_calendar">Рівень 2: Календар подій</string>
+    <string name="level_3_game">Рівень 3: Поле чудес</string>
+    <string name="level_4_roman">Рівень 4: Римські числа</string>
+    <string name="sum_title">Рівень 1: Сума двох чисел</string>
+    <string name="first_number_hint">Перше число</string>
+    <string name="second_number_hint">Друге число</string>
+    <string name="calculate_sum">Обчислити суму</string>
+    <string name="result_placeholder">Результат з\'явиться тут</string>
+    <string name="calendar_title">Рівень 2: Календар подій</string>
+    <string name="event_hint">Назва події</string>
+    <string name="add_event">Додати подію</string>
+    <string name="game_title">Рівень 3: Поле чудес</string>
+    <string name="letter_hint">Введіть літеру</string>
+    <string name="check_letter">Перевірити літеру</string>
+    <string name="new_game">Нова гра</string>
+    <string name="roman_title">Рівень 4: Римські числа</string>
+    <string name="roman_hint">Наприклад: XIV</string>
+    <string name="convert">Конвертувати</string>
+    <string name="invalid_numbers">Введіть два коректні числа</string>
+    <string name="sum_result_format">Сума: %1$s</string>
+    <string name="selected_date_format">Обрана дата: %1$s</string>
+    <string name="no_events">Подій на цю дату немає</string>
+    <string name="event_item_format">- %1$s</string>
+    <string name="delete_event">Видалити</string>
+    <string name="attempts_left_format">Спроб залишилось: %1$d</string>
+    <string name="enter_one_letter">Введіть одну літеру</string>
+    <string name="letter_already_used">Цю літеру вже вводили</string>
+    <string name="letter_exists">Літера є у слові</string>
+    <string name="letter_missing">Такої літери немає</string>
+    <string name="game_win_format">Перемога! Слово: %1$s</string>
+    <string name="game_over_format">Гру завершено. Було слово: %1$s</string>
+    <string name="new_game_message">Нова гра</string>
+    <string name="roman_result_format">Арабське число: %1$d</string>
+    <string name="invalid_roman_number">Некоректне римське число</string>
+
+    <string-array name="wheel_game_words">
+        <item>КОТЛІН</item>
+        <item>АНДРОЇД</item>
+        <item>ПРОГРАМА</item>
+        <item>СТУДЕНТ</item>
+        <item>КЛАВІАТУРА</item>
+    </string-array>
 </resources>
