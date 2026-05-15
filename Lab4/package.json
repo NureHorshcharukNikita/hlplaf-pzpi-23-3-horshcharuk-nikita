@@ -1,0 +1,15 @@
+{
+  "name": "lab4-hotel-booking",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "npm run dev --prefix Server",
+    "client": "npm run dev --prefix Client",
+    "build": "npm run build --prefix Client",
+    "install:all": "npm install --prefix Server && npm install --prefix Client"
+  },
+  "dependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

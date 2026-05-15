@@ -1,0 +1,8 @@
+node_modules/
+Client/node_modules/
+Client/dist/
+Server/node_modules/
+Server/data/
+dist/
+server/data/
+.env
