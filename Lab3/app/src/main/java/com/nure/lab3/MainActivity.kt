@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.nure.lab3.components.AppShell
+import com.nure.lab3.screens.renderAdminOrdersScreen
 import com.nure.lab3.screens.renderCartScreen
 import com.nure.lab3.screens.renderCatalogScreen
 import com.nure.lab3.screens.renderLoginScreen
@@ -48,6 +49,7 @@ class MainActivity : AppCompatActivity() {
     private fun render() {
         shell.update(
             isLoggedIn = controller.isLoggedIn,
+            isAdmin = controller.isAdmin,
             status = controller.headerStatus,
             currentTab = controller.currentTab,
             cartCount = controller.cartCount,
@@ -58,6 +60,18 @@ class MainActivity : AppCompatActivity() {
 
         if (!controller.isLoggedIn) {
             renderAuth()
+            return
+        }
+
+        if (controller.isAdmin) {
+            renderAdminOrdersScreen(
+                context = this,
+                ui = ui,
+                parent = shell.content,
+                state = controller.adminOrdersState,
+                onRefresh = { controller.loadOrders(force = true) },
+                onStatusChange = controller::updateOrderStatus
+            )
             return
         }
 

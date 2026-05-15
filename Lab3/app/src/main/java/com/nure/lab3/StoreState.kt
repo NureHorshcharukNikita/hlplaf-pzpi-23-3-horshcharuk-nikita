@@ -10,6 +10,12 @@ class StoreState(context: Context) {
     var token: String? = prefs.getString("token", null)
         private set
 
+    val user: UserSession?
+        get() = parseUserSession(token)
+
+    val isAdmin: Boolean
+        get() = user?.isAdmin == true
+
     val cartLines: Collection<CartLine>
         get() = cart.values
 

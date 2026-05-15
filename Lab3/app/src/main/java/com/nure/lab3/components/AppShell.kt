@@ -75,6 +75,7 @@ class AppShell(
 
     fun update(
         isLoggedIn: Boolean,
+        isAdmin: Boolean,
         status: String,
         currentTab: Tab,
         cartCount: Int,
@@ -82,7 +83,7 @@ class AppShell(
     ) {
         statusText.text = status
         logoutButton.visibility = if (isLoggedIn) View.VISIBLE else View.GONE
-        bottomNav.visibility = if (isLoggedIn) View.VISIBLE else View.GONE
+        bottomNav.visibility = if (isLoggedIn && !isAdmin) View.VISIBLE else View.GONE
 
         cartTab.text = "Кошик ($cartCount)"
         listOf(

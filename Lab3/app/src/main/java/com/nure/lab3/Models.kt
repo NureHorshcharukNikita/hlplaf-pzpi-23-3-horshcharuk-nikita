@@ -25,6 +25,15 @@ data class ProductPage(
     val total: Int
 )
 
+data class UserSession(
+    val id: Int,
+    val email: String,
+    val role: String
+) {
+    val isAdmin: Boolean
+        get() = role == "admin"
+}
+
 data class CartLine(
     val product: Product,
     val quantity: Int
@@ -34,6 +43,7 @@ data class Order(
     val id: Int,
     val total: Int,
     val status: String,
+    val userEmail: String?,
     val items: List<OrderItem>
 )
 

@@ -80,6 +80,12 @@ class StoreApi {
         }
     }
 
+    fun updateOrderStatus(token: String, orderId: Int, status: String, callback: (Result<Unit>) -> Unit) {
+        request("PATCH", "/orders/$orderId/status", JSONObject().put("status", status), token) { result ->
+            callback(result.map { })
+        }
+    }
+
     private fun request(
         method: String,
         path: String,
@@ -158,6 +164,7 @@ class StoreApi {
             id = optInt("id"),
             total = optInt("total"),
             status = optString("status", "pending"),
+            userEmail = optString("userEmail").ifBlank { null },
             items = (0 until items.length()).map { index ->
                 val item = items.getJSONObject(index)
                 OrderItem(

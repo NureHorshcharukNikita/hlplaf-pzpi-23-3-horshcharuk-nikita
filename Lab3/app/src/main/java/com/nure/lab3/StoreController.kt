@@ -2,6 +2,7 @@ package com.nure.lab3
 
 import com.nure.lab3.screens.CartScreenState
 import com.nure.lab3.screens.CatalogScreenState
+import com.nure.lab3.screens.AdminOrdersScreenState
 import com.nure.lab3.screens.OrdersScreenState
 import com.nure.lab3.screens.RecommendationsScreenState
 
@@ -31,11 +32,16 @@ class StoreController(
     val isLoggedIn: Boolean
         get() = state.token != null
 
+    val isAdmin: Boolean
+        get() = state.isAdmin
+
     val cartCount: Int
         get() = state.cartCount
 
     val headerStatus: String
-        get() = if (isLoggedIn) {
+        get() = if (isAdmin) {
+            "Адмін-панель замовлень"
+        } else if (isLoggedIn) {
             "Каталог товарів, кошик і ваші замовлення"
         } else {
             "Увійдіть, щоб переглядати товари та замовлення"
@@ -56,6 +62,9 @@ class StoreController(
     val ordersState: OrdersScreenState
         get() = OrdersScreenState(ordersCache)
 
+    val adminOrdersState: AdminOrdersScreenState
+        get() = AdminOrdersScreenState(ordersCache)
+
     val recommendationsState: RecommendationsScreenState
         get() = RecommendationsScreenState(
             products = recommendationsCache,
@@ -64,9 +73,13 @@ class StoreController(
 
     fun loadInitialData() {
         if (state.token != null) {
-            loadProducts(force = false)
             loadOrders()
-            loadRecommendations()
+            if (!isAdmin) {
+                loadProducts(force = false)
+                loadRecommendations()
+            } else {
+                currentTab = Tab.Orders
+            }
         }
     }
 
@@ -81,6 +94,12 @@ class StoreController(
     }
 
     fun selectTab(tab: Tab) {
+        if (isAdmin && tab != Tab.Orders) {
+            currentTab = Tab.Orders
+            render()
+            return
+        }
+
         currentTab = tab
         if (tab == Tab.Orders) loadOrders()
         if (tab == Tab.Recommendations) loadRecommendations()
@@ -103,12 +122,14 @@ class StoreController(
             setLoading(false)
             result.onSuccess { token ->
                 state.saveToken(token)
-                currentTab = Tab.Catalog
+                currentTab = if (isAdmin) Tab.Orders else Tab.Catalog
                 authPage = AuthPage.Login
                 toast("Вхід виконано")
-                loadProducts(force = true)
                 loadOrders(force = true)
-                loadRecommendations(force = true)
+                if (!isAdmin) {
+                    loadProducts(force = true)
+                    loadRecommendations(force = true)
+                }
                 render()
             }.onFailure { toast("Не вдалося увійти: ${it.message}") }
         }
@@ -131,6 +152,8 @@ class StoreController(
     }
 
     fun loadProducts(force: Boolean) {
+        if (isAdmin) return
+
         val freshCache = productsCache.isNotEmpty() && System.currentTimeMillis() - cacheLoadedAt < 5 * 60 * 1000
         if (!force && freshCache) {
             render()
@@ -156,6 +179,7 @@ class StoreController(
     }
 
     fun loadMoreProducts() {
+        if (isAdmin) return
         if (productsCache.size >= productsTotal) return
 
         setLoading(true)
@@ -177,6 +201,8 @@ class StoreController(
     }
 
     fun applySearch(query: String) {
+        if (isAdmin) return
+
         searchText = query.trim()
 
         if (searchText.isBlank()) {
@@ -192,6 +218,8 @@ class StoreController(
     }
 
     fun clearSearch() {
+        if (isAdmin) return
+
         searchText = ""
         loadProducts(force = true)
     }
@@ -211,6 +239,8 @@ class StoreController(
     }
 
     fun loadRecommendations(force: Boolean = false) {
+        if (isAdmin) return
+
         val token = state.token ?: return
         if (!force && recommendationsCache.isNotEmpty()) return
 
@@ -229,6 +259,8 @@ class StoreController(
     }
 
     fun checkout() {
+        if (isAdmin) return toast("Адміністратор не оформлює замовлення")
+
         val token = state.token ?: return toast("Спочатку авторизуйся")
         if (state.cartLines.isEmpty()) return toast("Кошик порожній")
 
@@ -247,19 +279,44 @@ class StoreController(
     }
 
     fun addToCart(product: Product) {
+        if (isAdmin) return
+
         state.addToCart(product)
         toast("${product.name} додано")
         render()
     }
 
     fun changeQuantity(product: Product, delta: Int) {
+        if (isAdmin) return
+
         state.changeQuantity(product, delta)
         render()
     }
 
     fun removeFromCart(productId: Int) {
+        if (isAdmin) return
+
         state.removeFromCart(productId)
         render()
+    }
+
+    fun updateOrderStatus(order: Order, status: String) {
+        val token = state.token ?: return toast("Спочатку авторизуйся")
+        if (!isAdmin) return toast("Недостатньо прав")
+        if (order.status == status) return
+
+        setLoading(true)
+        api.updateOrderStatus(token, order.id, status) { result ->
+            setLoading(false)
+            result.onSuccess {
+                ordersCache = ordersCache.map {
+                    if (it.id == order.id) it.copy(status = status) else it
+                }
+                toast("Статус оновлено")
+                loadOrders(force = true)
+                render()
+            }.onFailure { toast("Статус не змінено: ${it.message}") }
+        }
     }
 
     private fun loadAllProductsForSearch() {
