@@ -2,4 +2,10 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="shop_ink">#18212F</color>
+    <color name="shop_muted">#667085</color>
+    <color name="shop_surface">#F7F8FA</color>
+    <color name="shop_card">#FFFFFFFF</color>
+    <color name="shop_primary">#0B6B57</color>
+    <color name="shop_accent">#D87A36</color>
 </resources>
