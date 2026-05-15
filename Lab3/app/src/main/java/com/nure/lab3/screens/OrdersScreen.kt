@@ -33,6 +33,6 @@ fun renderOrdersScreen(
 
     parent.addView(
         ui.secondaryButton("Оновити статуси").apply { setOnClickListener { onRefresh() } },
-        LinearLayout.LayoutParams(match(), ui.dp(50)).withTop(ui.dp(2))
+        LinearLayout.LayoutParams(match(), ui.dp(50)).withTop(ui.dp(16))
     )
 }
