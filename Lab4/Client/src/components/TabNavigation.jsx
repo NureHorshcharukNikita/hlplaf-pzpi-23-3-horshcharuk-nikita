@@ -5,7 +5,7 @@ const publicTabs = [
 ];
 
 const adminTabs = [
-  { id: "documents", label: "NoSQL" },
+  { id: "documents", label: "Нотатки" },
   { id: "admin", label: "Адмін" }
 ];
 

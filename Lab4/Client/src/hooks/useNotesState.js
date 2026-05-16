@@ -19,7 +19,7 @@ export function useNotesState(runTask, setMessage) {
           .map((tag) => tag.trim())
           .filter(Boolean)
       });
-      setMessage("NoSQL документ додано", "note-form");
+      setMessage("Нотатку додано", "note-form");
       setNote(initialNote);
       setNotes(await hotelApi.getNotes());
     }, "note-form");
@@ -28,7 +28,7 @@ export function useNotesState(runTask, setMessage) {
   async function removeNote(id) {
     await runTask(async () => {
       await hotelApi.deleteNote(id);
-      setMessage("NoSQL документ видалено", `note-delete:${id}`);
+      setMessage("Нотатку видалено", `note-delete:${id}`);
       setNotes(await hotelApi.getNotes());
     }, `note-delete:${id}`);
   }

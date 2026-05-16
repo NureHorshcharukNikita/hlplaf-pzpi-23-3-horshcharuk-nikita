@@ -3,7 +3,7 @@ export function NotesPanel({ notes, note, messageFor, onSubmit, onChange, onRemo
     <section className="content-grid bottom-grid">
       <form className="panel" onSubmit={onSubmit}>
         <div className="panel-title">
-          <h2>NoSQL документ</h2>
+          <h2>Нотатка готелю</h2>
         </div>
         <label>
           Готель
@@ -19,7 +19,7 @@ export function NotesPanel({ notes, note, messageFor, onSubmit, onChange, onRemo
           <input value={note.author} onChange={(event) => onChange("author", event.target.value)} placeholder="Reception" />
         </label>
         <label>
-          Текст документа
+          Текст нотатки
           <input
             value={note.text}
             onChange={(event) => onChange("text", event.target.value)}
@@ -31,13 +31,13 @@ export function NotesPanel({ notes, note, messageFor, onSubmit, onChange, onRemo
           Теги через кому
           <input value={note.tags} onChange={(event) => onChange("tags", event.target.value)} placeholder="vip, quiet, family" />
         </label>
-        <button type="submit">Додати документ</button>
+        <button type="submit">Додати нотатку</button>
         {messageFor?.("note-form") && <div className="inline-message">{messageFor("note-form")}</div>}
       </form>
 
       <div className="panel">
         <div className="panel-title">
-          <h2>Документи</h2>
+          <h2>Нотатки</h2>
           <span>{notes.length} записів</span>
         </div>
           <div className="note-list">
@@ -62,7 +62,7 @@ export function NotesPanel({ notes, note, messageFor, onSubmit, onChange, onRemo
                 </div>
               </article>
             ))}
-            {!notes.length && <p className="empty">Документи ще не додані.</p>}
+            {!notes.length && <p className="empty">Нотатки ще не додані.</p>}
           </div>
       </div>
     </section>
