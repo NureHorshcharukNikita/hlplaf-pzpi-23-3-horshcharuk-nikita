@@ -7,6 +7,21 @@ const sequelize = new Sequelize({
   logging: false
 });
 
+sequelize.addHook("afterConnect", async (connection) => {
+  if (sequelize.getDialect() === "sqlite") {
+    await new Promise((resolve, reject) => {
+      connection.run("PRAGMA foreign_keys = ON", (error) => {
+        if (error) {
+          reject(error);
+          return;
+        }
+
+        resolve();
+      });
+    });
+  }
+});
+
 const User = sequelize.define("User", {
   name: {
     type: DataTypes.STRING,
@@ -81,6 +96,13 @@ const Room = sequelize.define("Room", {
     defaultValue: "active",
     validate: { isIn: [["active", "maintenance"]] }
   }
+}, {
+  indexes: [
+    {
+      unique: true,
+      fields: ["HotelId", "number"]
+    }
+  ]
 });
 
 const Client = sequelize.define("Client", {
@@ -127,6 +149,14 @@ const Booking = sequelize.define("Booking", {
     allowNull: false,
     validate: { min: 0 }
   }
+}, {
+  validate: {
+    checkOutAfterCheckIn() {
+      if (this.checkIn && this.checkOut && this.checkIn >= this.checkOut) {
+        throw new Error("Check-out date must be after check-in date");
+      }
+    }
+  }
 });
 
 const Service = sequelize.define("Service", {
@@ -152,17 +182,17 @@ const BookingService = sequelize.define("BookingService", {
   }
 });
 
-Hotel.hasMany(Room, { foreignKey: { allowNull: false }, onDelete: "CASCADE" });
-Room.belongsTo(Hotel);
+Hotel.hasMany(Room, { foreignKey: { allowNull: false }, onDelete: "RESTRICT", onUpdate: "CASCADE" });
+Room.belongsTo(Hotel, { foreignKey: { allowNull: false }, onDelete: "RESTRICT", onUpdate: "CASCADE" });
 
-Client.hasMany(Booking, { foreignKey: { allowNull: false }, onDelete: "CASCADE" });
-Booking.belongsTo(Client);
+Client.hasMany(Booking, { foreignKey: { allowNull: false }, onDelete: "RESTRICT", onUpdate: "CASCADE" });
+Booking.belongsTo(Client, { foreignKey: { allowNull: false }, onDelete: "RESTRICT", onUpdate: "CASCADE" });
 
-Room.hasMany(Booking, { foreignKey: { allowNull: false }, onDelete: "CASCADE" });
-Booking.belongsTo(Room);
+Room.hasMany(Booking, { foreignKey: { allowNull: false }, onDelete: "RESTRICT", onUpdate: "CASCADE" });
+Booking.belongsTo(Room, { foreignKey: { allowNull: false }, onDelete: "RESTRICT", onUpdate: "CASCADE" });
 
-Booking.belongsToMany(Service, { through: BookingService });
-Service.belongsToMany(Booking, { through: BookingService });
+Booking.belongsToMany(Service, { through: BookingService, onDelete: "CASCADE", onUpdate: "CASCADE" });
+Service.belongsToMany(Booking, { through: BookingService, onDelete: "RESTRICT", onUpdate: "CASCADE" });
 
 module.exports = {
   sequelize,

@@ -174,6 +174,20 @@ app.delete("/api/bookings/:id", requireAdmin, async (req, res, next) => {
 });
 
 app.use((error, req, res, next) => {
+  if (error.name === "SequelizeUniqueConstraintError") {
+    res.status(409).json({
+      message: "Такий запис уже існує. Перевірте унікальні поля."
+    });
+    return;
+  }
+
+  if (error.name === "SequelizeForeignKeyConstraintError") {
+    res.status(409).json({
+      message: "Неможливо виконати дію, бо запис використовується в інших даних."
+    });
+    return;
+  }
+
   res.status(error.status || 500).json({
     message: error.message || "Server error"
   });

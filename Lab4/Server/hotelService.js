@@ -4,6 +4,12 @@ const { sequelize, Hotel, Room, Client, Booking, Service } = require("./database
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
+function httpError(message, status) {
+  const error = new Error(message);
+  error.status = status;
+  return error;
+}
+
 function normalizeDate(value) {
   const date = new Date(value);
 
@@ -53,9 +59,7 @@ async function getAvailableRooms({ city, hotelId, checkIn, checkOut, guests }) {
   const safeHotelId = Number(hotelId || 0);
 
   if (!safeCheckIn || !safeCheckOut || safeCheckIn >= safeCheckOut || safeGuests < 1) {
-    const error = new Error("Invalid search dates or guests count");
-    error.status = 400;
-    throw error;
+    throw httpError("Invalid search dates or guests count", 400);
   }
 
   const cacheKey = `available:${city || "all"}:${safeHotelId || "all"}:${safeCheckIn}:${safeCheckOut}:${safeGuests}`;
@@ -114,9 +118,7 @@ async function updateHotel(id, payload) {
   const hotel = await Hotel.findByPk(Number(id));
 
   if (!hotel) {
-    const error = new Error("Hotel not found");
-    error.status = 404;
-    throw error;
+    throw httpError("Hotel not found", 404);
   }
 
   await hotel.update({
@@ -132,13 +134,20 @@ async function updateHotel(id, payload) {
 }
 
 async function deleteHotel(id) {
-  const deleted = await Hotel.destroy({ where: { id: Number(id) } });
+  const hotelId = Number(id);
+  const hotel = await Hotel.findByPk(hotelId);
 
-  if (!deleted) {
-    const error = new Error("Hotel not found");
-    error.status = 404;
-    throw error;
+  if (!hotel) {
+    throw httpError("Hotel not found", 404);
   }
+
+  const roomsCount = await Room.count({ where: { HotelId: hotelId } });
+
+  if (roomsCount > 0) {
+    throw httpError("Неможливо видалити готель, поки в ньому є кімнати. Спочатку видаліть або перенесіть кімнати.", 409);
+  }
+
+  await hotel.destroy();
 
   clearCache("hotels:");
   clearCache("available:");
@@ -161,9 +170,7 @@ async function createRoom(payload) {
   const hotel = await Hotel.findByPk(data.HotelId);
 
   if (!hotel) {
-    const error = new Error("Hotel not found");
-    error.status = 404;
-    throw error;
+    throw httpError("Hotel not found", 404);
   }
 
   const room = await Room.create(data);
@@ -176,18 +183,20 @@ async function updateRoom(id, payload) {
   const room = await Room.findByPk(Number(id));
 
   if (!room) {
-    const error = new Error("Room not found");
-    error.status = 404;
-    throw error;
+    throw httpError("Room not found", 404);
   }
 
   const data = roomPayload(payload);
   const hotel = await Hotel.findByPk(data.HotelId);
 
   if (!hotel) {
-    const error = new Error("Hotel not found");
-    error.status = 404;
-    throw error;
+    throw httpError("Hotel not found", 404);
+  }
+
+  const hasBookings = await Booking.count({ where: { RoomId: room.id } });
+
+  if (hasBookings > 0 && Number(room.HotelId) !== data.HotelId) {
+    throw httpError("Неможливо перенести кімнату в інший готель, поки для неї існують бронювання.", 409);
   }
 
   await room.update(data);
@@ -197,13 +206,20 @@ async function updateRoom(id, payload) {
 }
 
 async function deleteRoom(id) {
-  const deleted = await Room.destroy({ where: { id: Number(id) } });
+  const roomId = Number(id);
+  const room = await Room.findByPk(roomId);
 
-  if (!deleted) {
-    const error = new Error("Room not found");
-    error.status = 404;
-    throw error;
+  if (!room) {
+    throw httpError("Room not found", 404);
   }
+
+  const bookingsCount = await Booking.count({ where: { RoomId: roomId } });
+
+  if (bookingsCount > 0) {
+    throw httpError("Неможливо видалити кімнату, поки для неї існують бронювання. Спочатку скасуйте або видаліть бронювання.", 409);
+  }
+
+  await room.destroy();
 
   clearCache("hotels:");
   clearCache("available:");
@@ -233,18 +249,14 @@ async function createBooking(payload, user) {
   const clientName = user?.role === "admin" ? payload.fullName : payload.fullName || user?.name;
 
   if (!checkIn || !checkOut || checkIn >= checkOut || !roomId || guests < 1 || !clientEmail || !clientName) {
-    const error = new Error("Invalid booking data");
-    error.status = 400;
-    throw error;
+    throw httpError("Invalid booking data", 400);
   }
 
   return sequelize.transaction(async (transaction) => {
     const room = await Room.findByPk(roomId, { transaction });
 
     if (!room || room.status !== "active" || room.capacity < guests) {
-      const error = new Error("Selected room is not available");
-      error.status = 400;
-      throw error;
+      throw httpError("Selected room is not available", 400);
     }
 
     const overlapping = await Booking.findOne({
@@ -258,9 +270,7 @@ async function createBooking(payload, user) {
     });
 
     if (overlapping) {
-      const error = new Error("Room is already booked for selected dates");
-      error.status = 409;
-      throw error;
+      throw httpError("Room is already booked for selected dates", 409);
     }
 
     const [client] = await Client.findOrCreate({
@@ -311,9 +321,7 @@ async function deleteBooking(id) {
   const deleted = await Booking.destroy({ where: { id: Number(id) } });
 
   if (!deleted) {
-    const error = new Error("Booking not found");
-    error.status = 404;
-    throw error;
+    throw httpError("Booking not found", 404);
   }
 
   clearCache("available:");
