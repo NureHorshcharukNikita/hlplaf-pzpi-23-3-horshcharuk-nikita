@@ -1,7 +1,12 @@
 const sqlite3 = require("sqlite3").verbose();
 const bcrypt = require("bcryptjs");
+const fs = require("fs");
+const path = require("path");
 
-const db = new sqlite3.Database("./data/shop.db");
+const dataDir = path.join(__dirname, "data");
+fs.mkdirSync(dataDir, { recursive: true });
+
+const db = new sqlite3.Database(path.join(dataDir, "shop.db"));
 
 db.serialize(() => {
   // ================= USERS =================
